@@ -1,5 +1,6 @@
 import { createContext } from "react";
-import { initialState } from "../types";
+import { initialState, type Credentials } from "../types";
+import mockApi from "../assets/mockApi";
 
 
 const AppContext = createContext(initialState)
@@ -13,7 +14,29 @@ export const AppProvider = ({children} : {childeren: React.ReactNode})=>{
     const [allFoodLogs, setAllFoodlogs] = useState<FoodEntry[]>([])
     const [allActivityLogs, setAllActivitylogs] = useState<ActivityEntry[]>([])
 
-    const signup = async 
+
+    const signup = async (credentials: Credentials)=> {
+        const {data} = await mockApi.auth.register(credentials)
+        setUser(data.user)
+        if(data?.user.age && data?.user?.weight && data?.user?.goal){
+            setonboardingCompleted(true)
+        }
+        localStorage.setItem('token', data.jwt)
+    }
+
+    const login = async (credentials: Credentials)=>{
+        const {data} = await mockApi.auth.login(credentials)
+        setUser({...data.user, token: data.jwt})
+        if(data?.user.age && data?.user?.weight && data?.user?.goal){
+            setonboardingCompleted(true)
+        }
+          localStorage.setItem('token', data.jwt)
+    }
+
+    const fetchUser = async (token: string)=>{
+        const {data} = await mockApi.user.me()
+        setUser({...data,token})
+    }
 
     const value = {}
 
