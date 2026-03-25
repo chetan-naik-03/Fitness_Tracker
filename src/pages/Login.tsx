@@ -1,9 +1,41 @@
 import { useState } from "react";
-import { AtSignIcon } from "lucide-react";
+import { AtSignIcon, } from "lucide-react";
+import { MailIcon } from "lucide-react";
+import { LockIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const Login = () => {
 
-  const [state, setState] = useState('sign up')
+  const [state, setState]= useState('sign up')
+  const [username, setUsername] = useState('')
+  const [email, setemail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const navigate = useNavigate()
+  const {login, signup, user} = useAppContext()
+
+  const handleSubmit = async (e: React.FormEvent)=> {
+    e.preventDefault()
+    setIsSubmitting(true);
+    if(state === "login"){
+      await login({email,password})
+    }else{
+      await signup({username, email, password})
+    }
+    setIsSubmitting(false)
+  }
+
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },[user, navigate])
+  
   return (
     <>
       <main className="login-page-container">
@@ -18,15 +50,56 @@ const Login = () => {
           {/* Username */}
           {state !== 'login' && (
             <div className= 'mt-4'>
-              <label className="font-medium text-sm text-gray-700 dark:text-gray-300"></label>
+              <label className="font-medium text-sm text-gray-700 dark:text-gray-300">Username</label>
               <div className="relative mt-2">
-                <AtSignIcon className="absolute left-3 top-1/2-translate-y-1/2 text-gray-400 size-4.5"/>
+                <AtSignIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4.5"/>
               
-              <input type="text" placeholder="enter the username"
+              <input onChange={(e)=>setUsername(e.target.value)} value={username}
+              type="text" placeholder="enter the username"
               className = "login-input" required/>
             </div>
-
+          </div>
+          )}
+             {/*email*/}
+           <div className= 'mt-4'>
+              <label className="font-medium text-sm text-gray-700 dark:text-gray-300">Email</label>
+              <div className="relative mt-2">
+                <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4.5"/>
+              
+              <input onChange={(e)=>setemail(e.target.value)} value={email}
+              type="email" placeholder="Please enter your email"
+              className = "login-input" required/>
             </div>
+          </div>
+           
+           {/*Password*/}
+           <div className= 'mt-4'>
+              <label className="font-medium text-sm text-gray-700 dark:text-gray-300">Password</label>
+              <div className="relative mt-2">
+                <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4.5"/>
+              
+              <input onChange={(e)=>setPassword(e.target.value)} value={password}
+               placeholder="Please enter your password"
+              className = "login-input pr-10" 
+              type={showPassword ? 'text' : 'password'}/>
+              <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              onClick={()=> setShowPassword((p)=> !p)} >
+                {showPassword ? <EyeOffIcon size={16}/> : <EyeIcon size={16}/>}
+             </button>
+            </div>
+          </div>
+           <button type="submit" disabled={isSubmitting}
+           className="login-button">
+            {isSubmitting ? "Signing in..." : state === "login" ? 'Login' : 'Sign Up'}
+           </button>
+
+           {state === 'login'
+           ?(
+           <p className="text-center py-6 text-sm text-gray-500 dark:text-gray-400"> Don't have an account ? <button onClick= {()=> setState('sign-up')} className="ml-1 cursor-pointer text-green-600 hover:underline">Sign up</button></p>
+           )
+          :
+          (
+            <p className="text-center py-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <button onClick= {()=> setState('login')}  className="ml-1 cursor-pointer text-green-600 hover:underline">Login</button></p>
           )}
         </form>
       </main>
