@@ -6,10 +6,11 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
+import { Toaster } from "react-hot-toast";
 
 const Login = () => {
 
-  const [state, setState]= useState('sign up')
+  const [state, setState]= useState('signup')
   const [username, setUsername] = useState('')
   const [email, setemail] = useState('')
   const [password, setPassword] = useState('')
@@ -38,8 +39,9 @@ const Login = () => {
   
   return (
     <>
+    <Toaster />
       <main className="login-page-container">
-        <form className="login-form">
+        <form className="login-form" onSubmit={handleSubmit}>
           <h2 className="text-3xl font-medium text-white">
             {state === 'login' ? "Sign In" : "Sign Up"}
           </h2>
@@ -95,7 +97,7 @@ const Login = () => {
 
            {state === 'login'
            ?(
-           <p className="text-center py-6 text-sm text-gray-500 dark:text-gray-400"> Don't have an account ? <button onClick= {()=> setState('sign-up')} className="ml-1 cursor-pointer text-green-600 hover:underline">Sign up</button></p>
+           <p className="text-center py-6 text-sm text-gray-500 dark:text-gray-400"> Don't have an account ? <button onClick= {()=> setState('signup')} className="ml-1 cursor-pointer text-green-600 hover:underline">Sign up</button></p>
            )
           :
           (
