@@ -21,7 +21,7 @@ const App = () => {
   }
 
   if (!onboardingCompleted) {
-    return <p>Onboarding...</p>; // or <Onboarding />
+    return <Onboarding />; // or <Onboarding />
   }
 
   return (
